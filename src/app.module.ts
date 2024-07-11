@@ -4,7 +4,6 @@ import { AppService } from './app.service';
 import { NinjasModule } from './ninjas/ninjas.module';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import config from '../data-source';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import typeorm from './config/typeorm';
 @Module({
