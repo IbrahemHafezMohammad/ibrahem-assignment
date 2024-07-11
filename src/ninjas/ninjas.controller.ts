@@ -22,7 +22,7 @@ export class NinjasController {
     @ApiOkResponse({ type: Ninja, isArray: true })
     @ApiQuery({ name: 'weapon', required: false })
     @Get()
-    getNinjas(@Query('weapon') weapon?: 'stars' | 'sword'): Ninja[] | NinjaObj[] {
+    getNinjas(@Query('weapon') weapon?: 'stars' | 'sword'): Promise<Ninja[]> | NinjaObj[] {
         return this.ninjasService.getNinjas(weapon);
     }
 
