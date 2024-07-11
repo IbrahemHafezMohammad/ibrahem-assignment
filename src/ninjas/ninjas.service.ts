@@ -1,15 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateNinjaDto } from './dto/create-ninja.dto';
 import { UpdateNinjaDto } from './dto/update-ninja.dto';
 import { Ninja } from './entities/ninja.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-
-interface NinjaObj {
-    id: number;
-    name: string;
-    weapon: string;
-}
 
 @Injectable()
 export class NinjasService {
@@ -18,56 +12,42 @@ export class NinjasService {
 
     }
 
-    private ninjas = [
-        {id: 0 , name: 'Narco', weapon: 'stars'},
-        {id: 1 , name: 'Bombasto', weapon: 'sword'},
-    ];
-
-    getNinjas(weapon?: 'stars' | 'sword'): Promise<Ninja[]> | NinjaObj[] {
+    getNinjas(weapon?: 'stars' | 'sword'): Promise<Ninja[]> {
         if (weapon) {
             return this.ninjasRepository.find({where: { weapon: weapon }});
-            // return this.ninjas.filter((ninja) => ninja.weapon === weapon);
         }
 
         return this.ninjasRepository.find();
     }
 
-    getNinja(id: number): Ninja | NinjaObj | null {
-        return this.ninjas.find((ninja) => ninja.id === id) || null;
+    async getNinja(id: number): Promise<Ninja> {
+        try {
+            return await this.ninjasRepository.findOneOrFail({where: { id: id }});
+        } catch (err) {
+            throw new NotFoundException('ninja is MIA');
+        }
     }
 
-    createNinja(createNinjaDto: CreateNinjaDto): Ninja | NinjaObj {
-        const newNinja = {
-            id: this.ninjas.length,
-            ...createNinjaDto
-        };
+    createNinja(createNinjaDto: CreateNinjaDto): Promise<Ninja> {
+        
+        const newNinja =  this.ninjasRepository.create(createNinjaDto);
 
-        this.ninjas.push(newNinja);
-
-        return newNinja;
+        return this.ninjasRepository.save(newNinja);
     }
 
-    updateNinja(id: number, updateNinjaDto: UpdateNinjaDto): Ninja | NinjaObj {
-        this.ninjas = this.ninjas.map((ninja) => {
-
-            if (ninja.id === id) {
-                return {
-                    ...ninja,
-                    ...updateNinjaDto
-                };
-            }
-
-            return ninja;
-        });
+    updateNinja(id: number, updateNinjaDto: UpdateNinjaDto): Promise<Ninja> {
+        
+        const res = this.ninjasRepository.update(id, updateNinjaDto);
+        
+        console.log(res);
 
         return this.getNinja(id);
     }
 
-    removeNinja(id: number): Ninja | NinjaObj {
-        const toBeRemoved = this.getNinja(id);
+    async removeNinja(id: number): Promise<Ninja> {
 
-        this.ninjas = this.ninjas.filter((ninja) => ninja.id != id);
-
-        return toBeRemoved;
+        const ninja = await this.getNinja(id);
+        
+        return this.ninjasRepository.remove(ninja);
     }
 }

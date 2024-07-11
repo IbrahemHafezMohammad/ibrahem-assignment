@@ -6,12 +6,6 @@ import { BeltGuard } from './guards/belt/belt.guard';
 import { Ninja } from './entities/ninja.entity';
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
 
-interface NinjaObj {
-    id: number;
-    name: string;
-    weapon: string;
-}
-
 @ApiTags('Ninjas')
 @Controller('ninjas')
 // @UseGuards(BeltGuard)
@@ -22,22 +16,16 @@ export class NinjasController {
     @ApiOkResponse({ type: Ninja, isArray: true })
     @ApiQuery({ name: 'weapon', required: false })
     @Get()
-    getNinjas(@Query('weapon') weapon?: 'stars' | 'sword'): Promise<Ninja[]> | NinjaObj[] {
+    async getNinjas(@Query('weapon') weapon?: 'stars' | 'sword'): Promise<Ninja[]> {
         return this.ninjasService.getNinjas(weapon);
     }
 
     @ApiOkResponse({ type: Ninja, isArray: false })
     @ApiNotFoundResponse()
     @Get(':id')
-    getNinja(@Param('id', ParseIntPipe) id: number): Ninja | NinjaObj {
+    async getNinja(@Param('id', ParseIntPipe) id: number): Promise<Ninja> {
 
-        const ninja = this.ninjasService.getNinja(id);
-
-        if (!ninja) {
-            throw new NotFoundException('Ninga is MIA');
-        }
-
-        return ninja;
+        return this.ninjasService.getNinja(id);
     }
 
 
@@ -45,17 +33,19 @@ export class NinjasController {
     @Post()
     @ApiBadRequestResponse()
     // @UseGuards(BeltGuard)
-    createNinja(@Body(new ValidationPipe) createNinjaDto: CreateNinjaDto): Ninja | NinjaObj{
+    async createNinja(@Body(new ValidationPipe) createNinjaDto: CreateNinjaDto): Promise<Ninja>{
         return this.ninjasService.createNinja(createNinjaDto);
     }
 
+    @ApiCreatedResponse({ type: Ninja })
     @Put(':id')
-    updateNinja(@Param('id') id: string, @Body() updateNinjaDto: UpdateNinjaDto): Ninja | NinjaObj {
+    @ApiBadRequestResponse()
+    async updateNinja(@Param('id') id: string, @Body() updateNinjaDto: UpdateNinjaDto): Promise<Ninja> {
         return this.ninjasService.updateNinja(+id, updateNinjaDto);
     }
 
     @Delete(':id')
-    removeNinja(@Param('id') id: string): Ninja | NinjaObj {
+    async removeNinja(@Param('id') id: string): Promise<Ninja> {
         return this.ninjasService.removeNinja(+id);
     }
 
