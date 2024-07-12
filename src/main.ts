@@ -18,7 +18,7 @@ async function bootstrap() {
   
   app.useGlobalPipes(new ValidationPipe());
   
-  useContainer(app.select(UsersModule), {fallbackOnErrors: true});
+  useContainer(app.select(AppModule), {fallbackOnErrors: true});
   
   const config = new DocumentBuilder()
     .setTitle('assignment')

@@ -10,9 +10,6 @@ import { JwtStrategy } from './auth/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { IsUniqueUsernameConstraint } from './validations/is-unique-username.validator';
-import { IsUniqueEmailConstraint } from './validations/is-unique-email.validator';
-
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -33,8 +30,6 @@ import { IsUniqueEmailConstraint } from './validations/is-unique-email.validator
     AdminsService,
     AuthService,
     JwtStrategy,
-    IsUniqueUsernameConstraint,
-    IsUniqueEmailConstraint,
   ],
   exports: [UsersService, AdminsService, AuthService],
 })

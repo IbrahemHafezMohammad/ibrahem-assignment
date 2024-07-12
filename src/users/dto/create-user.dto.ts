@@ -1,26 +1,25 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsEnum, IsNotEmpty, Matches, MaxLength, MinLength } from "class-validator";
+import { IsEmail, IsEnum, IsNotEmpty, IsOptional, Matches, MaxLength, MinLength } from "class-validator";
 import { UserRoles } from "../entities/enums/roles.enum";
 import { User } from "../entities/user.entity";
-import { IsUniqueEmail } from "../validations/is-unique-email.validator";
-import { IsUniqueUsername } from "../validations/is.unique";
+import { isUnique } from "src/shared/validation/is-unique-constraint";
 
 export class CreateUserDto {
 
     @ApiProperty({ example: 'John Doe', required: false})
+    @IsOptional()
     @MaxLength(255)
     name: string;
 
     @ApiProperty({ example: 'john_doe' })
     @IsNotEmpty()
+    @isUnique({tableName: 'users', column: 'username'})
     @MaxLength(50)
-    @IsUniqueUsername({ message: 'Username already exists' })
     username: string;
 
     @ApiProperty({ example: 'john.doe@example.com' })
     @IsNotEmpty()
     @IsEmail()
-    // @IsUniqueEmail({ message: 'Email already exists' })
     @MaxLength(320)
     email: string;
 
