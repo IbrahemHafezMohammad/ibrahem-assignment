@@ -10,6 +10,7 @@ import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
 import { RolesGuard } from '../auth/guards/roles.guard';
+import { instanceToPlain } from 'class-transformer';
 
 @ApiTags('Admins')
 @Controller('admin')
@@ -24,10 +25,11 @@ export class AdminsController {
   @Post('create')
   async createAdmin(@Res() res: Response, @Body(new ValidationPipe()) createUserDto: CreateUserDto): Promise<Response> {
     const createdUser = await this.adminService.create(createUserDto);
+    const userPlain = instanceToPlain(createdUser);
     return res.status(201).json({
       statusCode: 200,
       message: 'Admin user successfully created',
-      data: createdUser,
+      data: userPlain,
     });
   }
 

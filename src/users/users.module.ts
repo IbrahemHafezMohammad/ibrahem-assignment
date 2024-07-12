@@ -10,6 +10,8 @@ import { JwtStrategy } from './auth/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { IsUniqueUsernameConstraint } from './validations/is-unique-username.validator';
+import { IsUniqueEmailConstraint } from './validations/is-unique-email.validator';
 
 @Module({
   imports: [
@@ -20,13 +22,20 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET_KEY'),
-        signOptions: { expiresIn: '60m' },
+        signOptions: { expiresIn: '24h' },
       }),
       inject: [ConfigService],
     }),
   ],
-  providers: [UsersService, AdminsService, AuthService, JwtStrategy],
   controllers: [UsersController, AdminsController],
-  exports: [UsersService],
+  providers: [
+    UsersService,
+    AdminsService,
+    AuthService,
+    JwtStrategy,
+    IsUniqueUsernameConstraint,
+    IsUniqueEmailConstraint,
+  ],
+  exports: [UsersService, AdminsService, AuthService],
 })
 export class UsersModule {}

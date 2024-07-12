@@ -21,13 +21,11 @@ const AppDataSource = new DataSource({
 const createAdmin = async () => {
     await AppDataSource.initialize();
 
-    const password = await bcrypt.hash('1234qweR$', 10);
-
     const adminUser = new User();
     adminUser.name = 'Admin User';
     adminUser.username = 'admin';
     adminUser.email = 'admin@example.com';
-    adminUser.password = password;
+    adminUser.password = '1234qweR&';
     adminUser.role = UserRoles.Admin;
 
     await AppDataSource.manager.save(adminUser);
