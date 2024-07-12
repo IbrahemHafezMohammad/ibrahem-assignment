@@ -9,6 +9,7 @@ import { AuthService } from '../auth/auth.service';
 import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
+import { RolesGuard } from '../auth/guards/roles.guard';
 
 @ApiTags('Admins')
 @Controller('admin')
@@ -19,6 +20,7 @@ export class AdminsController {
     private readonly authService: AuthService
   ) { }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Post('create')
   async createAdmin(@Res() res: Response, @Body(new ValidationPipe()) createUserDto: CreateUserDto): Promise<Response> {
     const createdUser = await this.adminService.create(createUserDto);
@@ -49,7 +51,7 @@ export class AdminsController {
     });
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('profile')
   getProfile(@Req() req) {
     return req.user;
