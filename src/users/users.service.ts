@@ -11,10 +11,11 @@ export class UsersService {
 
   constructor(@InjectRepository(User) private userRepository: Repository<User>) {}
 
-  async createAdmin(createUserDto: CreateUserDto): Promise<User> {
+  async findByEmail(email: string): Promise<User | undefined> {
+    return await this.userRepository.findOne({ where: { email } });
+  }
 
-    const newUser = this.userRepository.create({...createUserDto, role: UserRoles.Admin});
-
-    return await this.userRepository.save(newUser);
+  async findById(id: number): Promise<User | undefined> {
+    return await this.userRepository.findOne({where: { id }});
   }
 }

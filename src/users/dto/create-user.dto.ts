@@ -4,8 +4,7 @@ import { UserRoles } from "../entities/enums/roles.enum";
 
 export class CreateUserDto {
 
-    @ApiProperty({ example: 'John Doe' })
-    @IsNotEmpty()
+    @ApiProperty({ example: 'John Doe', required: false})
     @MaxLength(255)
     name: string;
 

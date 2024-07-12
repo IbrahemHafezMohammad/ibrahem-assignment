@@ -11,7 +11,7 @@ export class AdminsService {
 
   constructor(@InjectRepository(User) private userRepository: Repository<User>) {}
 
-  async createAdmin(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto): Promise<User> {
 
     const newUser = this.userRepository.create({...createUserDto, role: UserRoles.Admin});
 

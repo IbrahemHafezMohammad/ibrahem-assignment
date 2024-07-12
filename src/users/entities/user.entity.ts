@@ -10,7 +10,7 @@ export class User extends BaseEntity {
   id: number;
 
   @ApiProperty()
-  @Column({ length: 255 })
+  @Column({ length: 255, nullable: true})
   name: string;
 
   @ApiProperty()

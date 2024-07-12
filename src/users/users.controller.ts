@@ -8,17 +8,4 @@ import { ApiTags } from '@nestjs/swagger';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
-  @Post()
-  @HttpCode(200)
-  async create(@Body(new ValidationPipe()) createUserDto: CreateUserDto): Promise<{ statusCode: number; message: string; data: any }> {
-    const createdUser = await this.usersService.create(createUserDto);
-    return {
-      statusCode: 200,
-      message: 'User successfully created',
-      data: {
-        'userId': createdUser.id
-      }
-    };
-  }
 }
